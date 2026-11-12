@@ -125,6 +125,7 @@ def test_outdated_ytdlp_and_bot_check_show_uv_pipx_pip_upgrades() -> None:
     ):
         for lang in ("en", "id"):
             formatted = err.format(lang)
-            assert "uv tool upgrade unduhin" in formatted
-            assert 'pipx runpip unduhin install -U "yt-dlp[default]"' in formatted
+            assert "uv sync -U" in formatted
+            assert "uv tool install . --force" in formatted
             assert 'pip install -U "yt-dlp[default]"' in formatted
+            assert "uv tool upgrade unduhin" in formatted

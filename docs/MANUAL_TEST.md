@@ -6,7 +6,7 @@ Use a public-domain / Creative Commons sample video & audio URL for live tests.
 
 | ID | Area | Command / Action | Expected Result | Pass / Fail | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **M01** | Doctor diagnostics | Run `unduhin doctor` | Exit code `0` when Required components (Python >= 3.10, `yt-dlp`, `FFmpeg`) are present, even if Recommended YouTube tools (`Deno`, `yt-dlp-ejs`) emit a warning; exit code `3` if any Required tool is missing, with clear OS-specific fix instructions and local package fallback details. | | |
+| **M01** | Doctor diagnostics | Run `unduhin doctor` | Exit code `0` when Required components (Python >= 3.11, `yt-dlp`, `FFmpeg`) are present, even if Recommended YouTube tools (`Deno`, `yt-dlp-ejs`) emit a warning; exit code `3` if any Required tool is missing, with clear OS-specific fix instructions and local package fallback details. | | |
 | **M02** | Info inspection | Run `unduhin info "<SAMPLE_URL>"` | Displays metadata table (title, uploader, duration, live status, estimated size, selected format) and exits `0` without creating any media or staging files in `~/Downloads/unduhin` or current working directory. | | |
 | **M03** | Dry run | Run `unduhin download "<SAMPLE_URL>" --mode audio --dry-run -o ./tmp-check` | Prints planned target filename cleanly with status `DRY-RUN`; exits `0`; `./tmp-check` contains no downloaded `.mp3`/`.mp4` or `.unduhin-tmp-*` folders. | | |
 | **M04** | Live MP3 download | Run `unduhin download "<SAMPLE_URL>" --mode audio --bitrate 192 -o ./tmp-out` | Progress bar completes; valid `.mp3` created in `./tmp-out`; summary table shows `OK` and exits `0`; zero `.unduhin-tmp-*` dirs left behind. | | |

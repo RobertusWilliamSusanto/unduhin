@@ -9,7 +9,7 @@ description = "Local-first media downloader and converter (MP3/MP4) with CLI and
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "RobertusWilliamSusanto" },
 ]
@@ -21,7 +21,6 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -60,7 +59,7 @@ markers = [
 addopts = "-m 'not network and not integration'"
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 src = ["src", "tests"]
 
@@ -72,7 +71,7 @@ ignore = ["E501"]
 "tests/**" = ["S101", "S108"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 strict = true
 warn_unreachable = true
 warn_unused_configs = true

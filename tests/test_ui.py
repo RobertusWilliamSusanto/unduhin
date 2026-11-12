@@ -97,13 +97,20 @@ def test_missing_gradio_raises_dependency_error_and_cli_exits_3(
         ui.launch_ui(target_dir, port=DEFAULT_UI_PORT, lang="en")
 
     assert exc_info.value.i18n_key == "error.gradio_missing"
-    assert 'pip install "unduhin[ui]"' in exc_info.value.format("en")
+    en_msg = exc_info.value.format("en")
+    assert "uv sync --extra ui" in en_msg
+    assert 'uv tool install ".[ui]" --force' in en_msg
+    assert 'pip install "unduhin[ui]"' in en_msg
+    id_msg = exc_info.value.format("id")
+    assert "uv sync --extra ui" in id_msg
+    assert 'uv tool install ".[ui]" --force' in id_msg
     assert not target_dir.exists()
 
     runner = CliRunner()
     result = runner.invoke(app, ["ui", "--output-dir", str(target_dir), "--lang", "en"])
     assert result.exit_code == int(ExitCode.MISSING_DEPENDENCY)
     assert "unduhin[ui]" in " ".join(result.output.split())
+    assert "uv sync --extra ui" in result.output
 
 
 def test_cli_ui_help_exposes_only_safe_flags_and_no_host() -> None:
@@ -262,6 +269,18 @@ def test_theme_and_css_have_no_external_assets_gradients_shadows_or_purple() -> 
     for key, msg in MESSAGES["en"].items():
         if key.startswith("ui."):
             assert all(ord(ch) < 0x1F000 for ch in msg), f"Emoji disallowed in {key}"
+
+
+def test_theme_toggle_applies_body_and_container_dark_classes_and_css() -> None:
+    assert "document.body.classList.toggle" in ui.THEME_TOGGLE_JS
+    assert "document.querySelectorAll(\".gradio-container\")" in ui.THEME_TOGGLE_JS
+    assert "document.body.classList.toggle" in ui.THEME_HEAD_SCRIPT
+    assert "html, body" in ui.CUSTOM_CSS
+    assert "body.dark" in ui.CUSTOM_CSS
+    assert ".gradio-container" in ui.CUSTOM_CSS
+    assert "background-color: var(--background-fill-primary)" in ui.CUSTOM_CSS
+    assert "gelap" in ui.THEME_TOGGLE_JS
+    assert "terang" in ui.THEME_TOGGLE_JS
 
 
 def test_theme_wcag_contrast_ratios_light_and_dark() -> None:

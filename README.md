@@ -21,7 +21,7 @@ Local, offline-first CLI and minimal localhost web UI for converting media URLs 
 - **Playlists disabled by default** (`--playlist` to opt in, bounded by `--max-items` default `50` / cap `200`, plus global cap `500` items per invocation).
 - **Batch mode** via UTF-8 text file (`--batch urls.txt`, comments `#`, blank lines ignored, preserves order, deduplicates, fail-fast validation before touching disk).
 - **Filename & path safety:** allowlisted template tokens (`{title}`, `{id}`, `{uploader}`, `{upload_date}`, `{ext}`) sanitized per OS, final path auto-clamped to `<= 240` chars, non-UTF-8 console replacement safety, staged inside `.unduhin-tmp-*`, and moved cleanly with `--on-conflict rename|skip|overwrite`.
-- **Two-tier diagnostics (`unduhin doctor`):** separates **Required** tools (`Python >= 3.10`, `yt-dlp`, `FFmpeg`) from **Recommended** YouTube extras (`yt-dlp-ejs`, `Deno >= 2.3.0`), plus **no-download inspection (`unduhin info`, `--dry-run`)**.
+- **Two-tier diagnostics (`unduhin doctor`):** separates **Required** tools (`Python >= 3.11`, `yt-dlp`, `FFmpeg`) from **Recommended** YouTube extras (`yt-dlp-ejs`, `Deno >= 2.3.0`), plus **no-download inspection (`unduhin info`, `--dry-run`)**.
 - **Minimal localhost web UI (`unduhin ui`)** strictly bound to `127.0.0.1` with EN/ID toggle, System/Light/Dark flat accessible theme, cooperative Cancel button, and fixed launch-time output directory.
 
 ### Non-Goals
@@ -49,7 +49,7 @@ By design, `unduhin` will **never** implement:
 
 - Official `yt-dlp` project: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) (installed via `yt-dlp[default]`).
 
-#### 2. Quick Install `unduhin` (Python >= 3.10)
+#### 2. Quick Install `unduhin` (Python >= 3.11)
 
 Install from local source / repository:
 
@@ -246,7 +246,7 @@ mypy src/unduhin
 | Platform / Python | CLI + Pipeline + Security + Lazy-Import Tests (Mocked `FakeMediaAdapter`) | Subprocess UI Localhost Server + Assets Zero Non-Loopback Connections + WCAG | Live End-to-End Downloads (`FFmpeg` + `Deno` + Network) | Real Browser Visual & Network Inspection (Playwright / Browser DevTools) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Windows / Python 3.13.14** | Verified (`198 passed, 1 skipped` Unix symlink test, `2 deselected` network/integration) | Verified in live subprocess with `socket.socket.connect` guard | **Verified on Windows** with Gyan.FFmpeg 9.0.2 + Deno 2.9.8 + yt-dlp 2026.10.26 (MP3/MP4, generic MP3/MP4-fallback, skip/rename/overwrite, SIGBREAK cancel, 2 network/integration tests passed) | **Not verified** (no headless browser/Playwright installed; manual checklist `M17`) |
-| **Linux / macOS / Python 3.10–3.12 (`.github/workflows/ci.yml`)** | Defined in CI workflow — **Not yet run / BELUM diverifikasi** | Defined in CI workflow — **Not yet run / BELUM diverifikasi** | **Not verified** | **Not verified** |
+| **Linux / macOS / Python 3.11–3.12 (`.github/workflows/ci.yml`)** | Defined in CI workflow — **Not yet run / BELUM diverifikasi** | Defined in CI workflow — **Not yet run / BELUM diverifikasi** | **Not verified** | **Not verified** |
 
 ---
 
@@ -267,7 +267,7 @@ Alat **CLI** dan **UI web lokal** yang berjalan sepenuhnya di komputer Anda untu
 - **Playlist nonaktif secara default** (aktifkan via `--playlist`, batas per playlist `--max-items` default `50` / maks `200`, dan batas global `500` item).
 - **Unduhan massal dari daftar teks UTF-8** (`--batch urls.txt`, komentar `#`, baris kosong diabaikan, menjaga urutan & menghapus duplikat, validasi fail-fast sebelum menyentuh disk).
 - **Keamanan nama file, path, & konsol:** token template terbatas (`{title}`, `{id}`, `{uploader}`, `{upload_date}`, `{ext}`), panjang path total dibatasi `<= 240` karakter, aman untuk konsol non-UTF-8, staging `.unduhin-tmp-*`, serta kebijakan `--on-conflict rename|skip|overwrite`.
-- **Diagnostik 2-tingkat (`unduhin doctor`):** memisahkan komponen **Wajib** (`Python >= 3.10`, `yt-dlp`, `FFmpeg`) dan **Disarankan untuk YouTube** (`yt-dlp-ejs`, `Deno`), ditambah inspeksi tanpa mengunduh (`unduhin info`, `--dry-run`).
+- **Diagnostik 2-tingkat (`unduhin doctor`):** memisahkan komponen **Wajib** (`Python >= 3.11`, `yt-dlp`, `FFmpeg`) dan **Disarankan untuk YouTube** (`yt-dlp-ejs`, `Deno`), ditambah inspeksi tanpa mengunduh (`unduhin info`, `--dry-run`).
 - **UI web lokal minimal (`unduhin ui`)** khusus di `127.0.0.1` dengan pilihan bahasa `EN`/`ID`, tema datar `System`/`Light`/`Dark`, tombol Batal kooperatif, dan folder output tetap saat peluncuran (`~/Downloads/unduhin` atau `UNDUHIN_OUTPUT_DIR`).
 
 ### Batasan (Non-Goals)
@@ -287,7 +287,7 @@ Sesuai desain, `unduhin` **tidak** akan memiliki: dukungan login/akun/ekspor coo
 - **Linux:** `sudo apt install ffmpeg` *(atau `dnf`/`pacman`)* dan `curl -fsSL https://deno.land/install.sh | sh` *(pastikan `~/.deno/bin` ada di `PATH`)*
 - Sumber resmi `yt-dlp`: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
-#### 2. Pasang Cepat `unduhin` (Python >= 3.10)
+#### 2. Pasang Cepat `unduhin` (Python >= 3.11)
 
 Pasang dari kode sumber / folder lokal:
 
@@ -369,4 +369,4 @@ Urutan prioritas: `130 > 3 > 2 > 1 > 0`.
 
 - **Terverifikasi (Windows / Python 3.13.14):** `198` test unit/keamanan/CLI/pipeline/lazy-import/locale/UI/isolasi-soket lulus (`1` test Unix symlink dilewati di Windows, `2` test live network/integration lulus saat dijalankan dengan flag opt-in `-m "network or integration"`).
 - **Terverifikasi di mesin Windows ini:** unduhan live dengan `FFmpeg` 9.0.2 + `Deno` 2.9.8 (MP3 audio 192 kbps, MP4 video H.264+AAC 720p, generic extractor MP3, MP4 audio-only fallback warning, `rename/skip/overwrite`, pembatalan `Ctrl+Break`/`130` tanpa sisa file).
-- **Belum terverifikasi di mesin ini:** uji visual & Network DevTools browser nyata (`Playwright` tidak terpasang; lihat `M17`), checklist playlist nyata (`M06`), serta eksekusi CI GitHub Actions lintas OS/Python `3.10–3.12` (`.github/workflows/ci.yml` sudah dibuat, **BELUM dijalankan**). Lihat daftar uji manual di [`docs/MANUAL_TEST.md`](docs/MANUAL_TEST.md).
+- **Belum terverifikasi di mesin ini:** uji visual & Network DevTools browser nyata (`Playwright` tidak terpasang; lihat `M17`), checklist playlist nyata (`M06`), serta eksekusi CI GitHub Actions lintas OS/Python `3.11–3.12` (`.github/workflows/ci.yml` sudah dibuat, **BELUM dijalankan**). Lihat daftar uji manual di [`docs/MANUAL_TEST.md`](docs/MANUAL_TEST.md).

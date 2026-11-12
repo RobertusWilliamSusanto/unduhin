@@ -336,10 +336,27 @@ UI_THEME_VARIABLES: dict[str, str] = {
 }
 
 CUSTOM_CSS = """
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-fill-primary) !important;
+    color: var(--body-text-color) !important;
+}
+html.dark, body.dark {
+    color-scheme: dark;
+    background-color: var(--background-fill-primary) !important;
+    color: var(--body-text-color) !important;
+}
+.gradio-container {
+    background-color: var(--background-fill-primary) !important;
+    color: var(--body-text-color) !important;
+}
 .unduhin-root {
     max-width: 720px;
     margin: 0 auto;
     padding: 20px 16px;
+    background-color: var(--background-fill-primary);
+    color: var(--body-text-color);
 }
 .unduhin-header h1 {
     font-size: 1.5rem;
@@ -383,25 +400,38 @@ THEME_HEAD_SCRIPT = """
 <script>
 (function () {
     const STORAGE_KEY = "unduhin-theme";
+    function parseTheme(raw) {
+        const s = String(raw || "").toLowerCase().trim();
+        if (s.includes("dark") || s.includes("gelap")) return "dark";
+        if (s.includes("light") || s.includes("terang")) return "light";
+        return "system";
+    }
     function readPref() {
         try {
-            const raw = window.localStorage.getItem(STORAGE_KEY);
-            if (raw === "light" || raw === "dark" || raw === "system") {
-                return raw;
-            }
+            return parseTheme(window.localStorage.getItem(STORAGE_KEY));
         } catch (_err) {
             return "system";
         }
-        return "system";
     }
     function applyPref(pref) {
         const prefersDark =
             typeof window.matchMedia === "function" &&
             window.matchMedia("(prefers-color-scheme: dark)").matches;
         const useDark = pref === "dark" || (pref === "system" && prefersDark);
-        document.documentElement.classList.toggle("dark", useDark);
+        if (document.documentElement) {
+            document.documentElement.classList.toggle("dark", useDark);
+        }
+        if (document.body) {
+            document.body.classList.toggle("dark", useDark);
+        }
+        document.querySelectorAll(".gradio-container").forEach(function (el) {
+            el.classList.toggle("dark", useDark);
+        });
     }
     applyPref(readPref());
+    document.addEventListener("DOMContentLoaded", function () {
+        applyPref(readPref());
+    });
     if (typeof window.matchMedia === "function") {
         const mq = window.matchMedia("(prefers-color-scheme: dark)");
         if (typeof mq.addEventListener === "function") {
@@ -418,7 +448,13 @@ THEME_HEAD_SCRIPT = """
 
 THEME_TOGGLE_JS = """
 (mode) => {
-    const next = mode === "light" || mode === "dark" || mode === "system" ? mode : "system";
+    const s = String(mode || "").toLowerCase().trim();
+    let next = "system";
+    if (s.includes("dark") || s.includes("gelap")) {
+        next = "dark";
+    } else if (s.includes("light") || s.includes("terang")) {
+        next = "light";
+    }
     try {
         window.localStorage.setItem("unduhin-theme", next);
     } catch (_err) {
@@ -428,17 +464,24 @@ THEME_TOGGLE_JS = """
         typeof window.matchMedia === "function" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches;
     const useDark = next === "dark" || (next === "system" && prefersDark);
-    document.documentElement.classList.toggle("dark", useDark);
+    if (document.documentElement) {
+        document.documentElement.classList.toggle("dark", useDark);
+    }
+    if (document.body) {
+        document.body.classList.toggle("dark", useDark);
+    }
+    document.querySelectorAll(".gradio-container").forEach(function (el) {
+        el.classList.toggle("dark", useDark);
+    });
 }
 """.strip()
 
 THEME_LOAD_JS = """
 () => {
     try {
-        const raw = window.localStorage.getItem("unduhin-theme");
-        if (raw === "light" || raw === "dark" || raw === "system") {
-            return raw;
-        }
+        const s = String(window.localStorage.getItem("unduhin-theme") || "").toLowerCase().trim();
+        if (s.includes("dark") || s.includes("gelap")) return "dark";
+        if (s.includes("light") || s.includes("terang")) return "light";
     } catch (_err) {
         return "system";
     }

@@ -3,18 +3,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum, IntEnum
+from enum import IntEnum, StrEnum
 from pathlib import Path
 
 
-class MediaMode(str, Enum):
+class MediaMode(StrEnum):
     """Target output media conversion mode."""
 
     AUDIO = "audio"
     VIDEO = "video"
 
 
-class ConflictPolicy(str, Enum):
+class ConflictPolicy(StrEnum):
     """Policy when the destination file already exists."""
 
     RENAME = "rename"
@@ -32,7 +32,7 @@ class ExitCode(IntEnum):
     CANCELLED = 130
 
 
-class ItemStatus(str, Enum):
+class ItemStatus(StrEnum):
     """Outcome status for an individual media item."""
 
     SUCCEEDED = "succeeded"

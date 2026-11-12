@@ -11,12 +11,12 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
 from unduhin.i18n import t
 
-MIN_PYTHON_VERSION: tuple[int, int] = (3, 10)
+MIN_PYTHON_VERSION: tuple[int, int] = (3, 11)
 MIN_DENO_VERSION: tuple[int, int, int] = (2, 3, 0)
 YTDLP_OUTDATED_DAYS: int = 90
 
@@ -25,7 +25,7 @@ _FFMPEG_VERSION_RE = re.compile(r"ffmpeg version\s+([^\s]+)")
 _YTDLP_CALVER_RE = re.compile(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})")
 
 
-class CheckStatus(str, Enum):
+class CheckStatus(StrEnum):
     """Health status for an environment check item."""
 
     OK = "ok"
@@ -33,7 +33,7 @@ class CheckStatus(str, Enum):
     MISSING = "missing"
 
 
-class CheckTier(str, Enum):
+class CheckTier(StrEnum):
     """Severity tier distinguishing mandatory runtime tools from optional extras."""
 
     REQUIRED = "required"
@@ -206,34 +206,34 @@ def _fix_instructions(component: str, os_family: str) -> str:
         "python": {
             "windows": "winget install Python.Python.3.13",
             "macos": "brew install python@3.13",
-            "linux": "Install Python >= 3.10 via pyenv, uv (`uv python install 3.13`), or distro packages",
+            "linux": "Install Python >= 3.11 via pyenv, uv (`uv python install 3.13`), or distro packages",
         },
         "yt-dlp": {
             "windows": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
             "macos": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
             "linux": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
         },
         "yt-dlp-ejs": {
             "windows": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
             "macos": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
             "linux": (
-                'uv tool upgrade unduhin  |  pipx runpip unduhin install -U "yt-dlp[default]"'
-                '  |  pip install -U "yt-dlp[default]"'
+                'uv sync -U  |  uv tool install . --force  |  pip install -U "yt-dlp[default]"'
+                '  |  (post-release: uv tool upgrade unduhin)'
             ),
         },
         "ffmpeg": {
@@ -251,7 +251,7 @@ def _fix_instructions(component: str, os_family: str) -> str:
 
 
 def check_python(*, os_family: str, lang: str | None = None) -> DoctorCheck:
-    """Check whether the running Python interpreter satisfies ``>= 3.10``."""
+    """Check whether the running Python interpreter satisfies ``>= 3.11``."""
     ver_info = sys.version_info
     version_str = f"{ver_info.major}.{ver_info.minor}.{ver_info.micro}"
     if (ver_info.major, ver_info.minor) >= MIN_PYTHON_VERSION:

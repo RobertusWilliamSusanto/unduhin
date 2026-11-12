@@ -40,10 +40,15 @@ def test_check_python_ok_and_old(monkeypatch: pytest.MonkeyPatch) -> None:
     ok = check_python(os_family="linux", lang="en")
     assert ok.status is CheckStatus.OK
 
+    monkeypatch.setattr("unduhin.doctor.sys.version_info", SimpleNamespace(major=3, minor=10, micro=14))
+    old10 = check_python(os_family="windows", lang="id")
+    assert old10.status is CheckStatus.MISSING
+    assert "winget" in old10.fix_hint
+
     monkeypatch.setattr("unduhin.doctor.sys.version_info", SimpleNamespace(major=3, minor=9, micro=18))
-    old = check_python(os_family="windows", lang="id")
-    assert old.status is CheckStatus.MISSING
-    assert "winget" in old.fix_hint
+    old9 = check_python(os_family="windows", lang="id")
+    assert old9.status is CheckStatus.MISSING
+    assert "winget" in old9.fix_hint
 
 
 def test_check_ytdlp_and_outdated_offline_check(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -54,9 +59,10 @@ def test_check_ytdlp_and_outdated_offline_check(monkeypatch: pytest.MonkeyPatch)
     stale = check_ytdlp(os_family="macos", lang="en", today=dt.date(2027, 4, 1))
     assert stale.status is CheckStatus.WARN
     assert stale.tier is CheckTier.REQUIRED
-    assert "uv tool upgrade unduhin" in stale.fix_hint
-    assert "pipx runpip unduhin" in stale.fix_hint
+    assert "uv sync -U" in stale.fix_hint
+    assert "uv tool install . --force" in stale.fix_hint
     assert 'pip install -U "yt-dlp[default]"' in stale.fix_hint
+    assert "uv tool upgrade unduhin" in stale.fix_hint
 
     def _not_found(_pkg: str) -> str:
         raise importlib.metadata.PackageNotFoundError("yt-dlp")
