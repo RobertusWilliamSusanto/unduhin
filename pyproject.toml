@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=77.0.3,<82.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unduhin"
+version = "0.1.0"
+description = "Local-first media downloader and converter (MP3/MP4) with CLI and optional local web UI."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+    { name = "RobertusWilliamSusanto" },
+]
+keywords = ["media", "downloader", "mp3", "mp4", "yt-dlp", "ffmpeg", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+    "Topic :: Multimedia :: Video :: Conversion",
+]
+dependencies = [
+    "yt-dlp[default]>=2026.10.26",
+    "typer>=0.15.0,<1.0.0",
+    "rich>=13.9.0,<16.0.0",
+]
+
+[project.optional-dependencies]
+ui = [
+    "gradio>=6.0.0,<7.0.0",
+]
+dev = [
+    "pytest>=8.0.0,<10.0.0",
+    "ruff>=0.9.0,<1.0.0",
+    "mypy>=1.14.0,<3.0.0",
+]
+
+[project.scripts]
+unduhin = "unduhin.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "network: integration tests requiring live network access (deselected by default)",
+    "integration: end-to-end tests requiring external ffmpeg and deno binaries (deselected by default)",
+]
+addopts = "-m 'not network and not integration'"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "S", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S108"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unreachable = true
+warn_unused_configs = true
+files = ["src/unduhin"]
+
+[[tool.mypy.overrides]]
+module = ["yt_dlp", "yt_dlp.*"]
+ignore_missing_imports = true
